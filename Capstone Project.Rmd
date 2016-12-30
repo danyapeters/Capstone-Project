@@ -1,0 +1,191 @@
+---
+output: word_document
+---
+```{r echo=FALSE}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+
+Title.One <- read.csv("C:/Users/Danya/Documents/Foundations in Data Science/Capstone Project/Title One.csv")
+
+County.State <- read.csv("C:/Users/Danya/Documents/Foundations in Data Science/Capstone Project/County State.csv")
+
+Special.Populations <- read.csv("C:/Users/Danya/Documents/Foundations in Data Science/Capstone Project/Special Populations.csv")
+
+Clark.Washoe <- read.csv("C:/Users/Danya/Documents/Foundations in Data Science/Capstone Project/Clark Washoe.csv")
+
+table.one <- read.csv("C:/Users/Danya/Documents/Foundations in Data Science/Capstone Project/table one.csv")
+
+Underperforming.States <- read.csv("C:/Users/Danya/Documents/Foundations in Data Science/Capstone Project/Underperforming States.csv")
+
+```
+---
+title: "Gains in Cohort Graduation Rates in Nevada "
+output: html_document
+---
+
+
+#Abstract
+
+For the class of 2011, Nevada ranked the worst among states with a graduation rate of 62%.  Graduation rates improved at both Washoe County School District (WCSD) and Clark County School District (CCSD) and at the State level between 2011 and 2015.  Some schools, such as Hug High School in WCSD, and Eldorado and Rancho High Schools in CCSD, have shown large improvements in graduation rates.  Special populations of students have shown gains over this five year period, but are still lagging well behind when compared to the general student population.  These students who are economically disadvantaged, students with disabilities, and students who are English language learners represent the biggest opportunities for growth in the future.  In Washoe and Clark counties in Nevada, high unemployment rates appear to have put stressors on families that resulted in decreased graduation rates. The current research suggests that unemployment rates can effect graduation rates, at least in more urban communities where the effectiveness of schools might be especially vulnerable to environmental influences because they are already underperforming.
+
+
+#Introduction to the Problem
+
+In a comparison of high school graduation rates across the United States for the class of 2011, Nevada ranked the worst among states with a graduation rate of 62%.    Over the last five years, much effort has been expended state-wide to increase Nevada's graduation rates.    The current analysis will primarily focus on the students in Washoe County and Clark County School Districts.  Washoe County School District (WCSD) is the second biggest school district in Nevada and covers much of Reno, Sparks, Incline Village, and surrounding areas in Northern Nevada.  Clark County School District (CCSD) is, by far, the biggest school district in Nevada and covers much of Las Vegas, Henderson, North Las Vegas, Boulder City, Mesquite, and surrounding areas in Southern Nevada.  Together, these two school districts represent the largest urban areas of Nevada.  
+
+
+#Research Questions:
+The current analysis will address the following questions:
+
+1)	How have the WCSD and CCSD graduation rates compared to the state of Nevada rates as a whole?  
+2)	What has the trend in graduation rates been over the last five years, both statewide and in WCSD and CCSD?
+3)	Which groups of students have shown the biggest gains in graduation rates in WCSD and CCSD?
+4)	Which groups of students have shown the smallest gains in graduation rates in WCSD and CCSD?
+5)  Were there any community level variables that influenced graduation rates in WCSD and CCSD during this five year period?
+
+Analyses will focus on comparing successive cohorts of graduating seniors in WCSD and CCSD with the state of Nevada over a five year period.  A positive change will represent improvement at the district and state level, while a negative change will represent a lack of improvement. Plots of the aggregated graduation rates will be used to analyze trends over five cohorts of seniors (classes of 2011-2015). Finally, several community level variables (unemployment rates, crime rates, and poverty rates) will be analyzed to see if they influenced graduation rates.  
+
+
+#Data:
+Nevada data were drawn from the Nevada Annual Reports of Accountability, which are released annually by the Nevada Department of Education.  Aggregated cohort graduation rates comprise the outcome data, with no individual level results.  Data was downloaded from http://www.nevadareportcard.com/di/main/cohort. The data set contains district level graduation rates for WCSD and CCSD and state level graduation rates.   The data set also contains graduation rates for several special populations in the districts:  students who receive free or reduced price lunch (FRL), students on Individualized Education Plans (IEP), and students who are English language learners (ELL).   The data set does not contain any information about education related changes at the district or state level that could explain trends in the data.  However, unemployment rates were also drawn from the Bureau of Labor Statistics, crime rates from city-data.com, and poverty rates from the U.S. Census Bureau in order to assess the effects of some community level variables in Nevada.   
+
+Aggregated cohort graduation rates for Alaska were drawn from the Alaska Department of Education and Early Development website: https://education.alaska.gov/ReportCardToThePublic/.  Aggregated cohort graduation rates for Georgia and Oregon were drawn from the Kids Count Data Center website: http://datacenter.kidscount.org/locations.  The data set contains county level graduation rates for urban areas in these three states and county level unemployment rates that were drawn from the Bureau of Labor Statistics.  
+
+Minimal data cleaning was necessary.  Data pulled from the Nevada Annual Reports of Accountability were already organized into "tidy" data.  Washoe County School District was referred to as both "WCSD" and "Washoe" in the data set and substitution was used to standardize them to "Washoe".  
+
+```{r echo=FALSE}
+County.State$Name<-gsub(pattern="WCSD", replacement = "Washoe", x=County.State$Name)
+Special.Populations$Name<-gsub(pattern="WCSD", replacement = "Washoe", x=Special.Populations$Name)
+```
+
+#Data Analysis: 
+
+In order to address the first two research questions, graduation rates for the classes of 2011 to 2015 were plotted for both WCSD and CCSD, as well as the State of Nevada as a whole.  This plot compares successive cohorts of graduating seniors in WCSD and CCSD with the state of Nevada over a five year period.
+
+
+```{r echo=FALSE}
+ggplot(County.State, aes(x=Class.Of, y=Graduation.Rate.Total, color=Name, group=Name))+
+  geom_line()+
+  labs(title="County and State Graduation Rates, 2011-2015")+
+  labs(x = "Class of")+
+  labs(y="Graduation Rate")
+```
+
+As can be seen in the plot, WCSD has had the highest graduation rates overall when compared to CCSD and the State of Nevada as a whole.   The graduation rates for WCSD increased from 70.04%  in 2011 to 74.99% by 2015. WCSD rates improved 4.95% between 2011 and 2015.  The 2011 graduation rates for CCSD were lower than both the WCSD rates (59.34% vs. 70.04%) and the State of Nevada rates (59.34% vs. 61.96%).  However, CCSD graduation rates passed the State level rates by 2013 and continued to be higher through 2015 (72.07% vs. 70.77%).    CCSD graduation rates improved 12.73% between 2011 and 2015.  These positive changes represent improvement at both the district and the state level.  
+ 
+The next phase of the data analysis included identifying schools who had shown the greatest amount of improvement from 2011 to 2015.  The school in WCSD that had shown the greatest amount of improvement for this five year period was Hug High School.  Between 2011 and 2015, the graduation rates at Hug High School improved 26.10%.   In order to assess whether similar schools in the CCSD had shown similar rates of improvement, data from the National Center for Education Statistics was used to match Hug High School with similar schools in CCSD.  Matching was performed based on Title 1 status, total number of students, student/teacher ratio, gender, and race/ethnicity.   Eldorado High School was shown to be the best match for Hug High School. However, Rancho High School was also very similar (with the exception that it has more than twice as many students).   
+
+A second plot was created that compared the graduation rates for Hug High School, Eldorado High School, and Rancho High School.  This plot compares successive cohorts of graduating seniors from these high schools over a five year period.
+
+```{r echo=FALSE}
+ggplot(Title.One, aes(x=Class.Of, y=Graduation.Rate.Total, color=Name, group=Name))+
+  geom_line()+
+  labs(title="Graduation Rates: Hug, Eldorado, & Rancho HS")+
+  labs(x = "Class of")+
+  labs(y="Graduation Rate")
+```
+
+As can be seen in the plot, all three high schools showed huge increases in graduation rates from 2011 to 2015. Over this five year period, Hug High School graduation rates improved 26.10%, Eldorado High School graduation rates improved 20.09%, and Rancho High School graduation rates improved 26.16%.   The overall trend is one of improvement for all three schools, although Eldorado had its highest graduation rates in 2014.  
+
+
+##Special Populations:
+
+Data is collected on several special populations within the schools in Nevada.  Data analysis was performed on these special populations to try to identify which groups of students have presented the lowest graduation rates.  Students who receive free or reduced price lunch (FRL) represent economically disadvantaged students. Students who are on Individual Education Plans (IEP) represent the students with disabilities.  Students who are English language learners (ELL) represent the students with language barriers to learning.     
+
+A third plot was created to compare the 2011-2015 graduation rates for the FRL students from WCSD, CCSD, and the State of Nevada as a whole.   
+
+```{r echo=FALSE}
+ggplot(Special.Populations, aes(x=Class.Of, y=Graduation.Rate.FRL, color=Name, group=Name))+
+  geom_line()+
+  labs(title="Graduation Rates for FRL Students, 2011-2015")+
+  labs(x = "Class of")+
+  labs(y="Graduation Rate")
+```
+
+As can be seen in the plot, FRL students showed improvement over this five year time period. Graduation rates for FRL students in CCSD improved 13.3% to 65.23%, graduation rates for WCSD improved 11.28% to 65.58%, and graduation rates for the State improved 10.6% to 63.68%.  
+
+A fourth plot was created to compare the 2011-2015 graduation rates for the IEP students from WCSD, CCSD, and the State of Nevada as a whole.
+
+```{r echo=FALSE}
+ggplot(Special.Populations, aes(x=Class.Of, y=Graduation.Rate.IEP, color=Name, group=Name))+
+  geom_line()+
+  labs(title="Graduation Rates for IEP Students, 2011-2015")+
+  labs(x = "Class of")+
+  labs(y="Graduation Rate")
+```
+
+As can be seen in the plot, IEP students in CCSD showed the greatest five year improvement of 7.65%, followed by the State as a whole at 5.43%, and WCSD at 3.95%.  WCSD had its highest graduation rates for IEP students in 2012 at 30.35%, while both the State and CCSD recorded their highest graduation rates for IEP students in 2015 with 28.97% and 27.55, respectively. The 2014-2015 State target for the percent of IEP students graduating from high school with a regular diploma is 83.76%.  The actual graduation rates for IEP students fall well short of this target.  
+
+A fifth plot was created to compare the 2011-2015 graduation rates for the ELL students from WCSD, CCSD, and the State of Nevada as a whole.
+
+```{r echo=FALSE}
+ggplot(Special.Populations, aes(x=Class.Of, y=Graduation.Rate.ELL, color=Name, group=Name))+
+  geom_line()+
+  labs(title="Graduation Rates for ELL Students, 2011-2015")+
+  labs(x = "Class of")+
+  labs(y="Graduation Rate")
+```
+
+As can be seen in the plot, ELL students also showed modest gains in graduation rates between 2011 and 2015.  WCSD ELL student graduation rates improved 9.83% to 26.85%, CCSD ELL student graduation rates improved 4% to 32.20%, and State ELL graduation rates improved 3.09% to 32.05%.
+
+These trends in graduation rates for the Special Populations provide information about the groups of students who can be the focus of efforts to improve overall graduation rates.   These groups of students have shown gains over this five year period, but are still lagging well behind when compared to the general student population.  These special populations represent the biggest opportunities for growth in the future.  Targeted effort should be focused on students who are economically disadvantaged, students with disabilities, and students who are English language learners.    
+
+
+## Model Development:
+
+As a whole, both WCSD and CCSD saw huge increases in graduation rates between 2011 and 2015.  Although not directly assessed in the current research, changes at the district and school levels presumably account for much of the improvements seen in graduation rates.  For example, a new principal named Lauren Ford was hired in 2011 at Hug High School in WCSD. Principal Ford moved Hug High School from a block schedule to a flexible schedule where classes were shorter and the students saw the same teachers every day in order to help build relationships between the students and the teachers.  Also, having higher expectations for students has been a priority state wide.  Beyond the effects of changes at the district and school levels, the current research asked whether there were any community level changes that also effected graduation rates.   
+
+A linear regression model was fitted to the data to estimate the extent that unemployment rates, crime rates, and poverty rates were predictive of graduation rates in Washoe and Clark County School Districts between 2011 and 2015. The crime rate and poverty rate variables were deleted from the model because they were not found to be significantly related to graduation rates.  The final bivariate regression model estimates the effect of unemployment rates on graduation rates in Washoe and Clark counties.  
+
+
+```{r echo=FALSE}
+plotNevada <- ggplot(Clark.Washoe,aes(x=Graduation.Rate.Total, y=Unemployment.Rate)) +
+   geom_point() +
+   stat_smooth(method='lm',se=FALSE)+
+   labs(title="Effect of Unemployment on Graduation Rates: NV")+
+   labs(x = "Graduation Rate")+
+   labs(y="Unemployment Rate")
+print(plotNevada)
+```
+
+As expected, graduation rates increased as unemployment rates decreased.  This model explains 48% of the variance in the graduation rates in Washoe and Clark Counties between 2011 and 2015 (R-squared=.48). Nearly half of the gains in graduation rates during this time can be attributed to decreases in the unemployment rates.  Interestingly, this relationship between unemployment rates and graduation rates was not significant for other counties in Nevada during this same time period.  While it is beyond the scope of the current research to examine why this relationship did not hold true for more rural areas, it is possible that the negative effects of unemployment on families are enhanced in more urban areas versus more rural ones.
+
+In order to assess whether this relationship between graduation rates and unemployment rates would hold true in similar communities, bivariate regression models were estimated for urban areas in other low performing states. The states with the lowest graduation rates in 2011 were Nevada, New Mexico, Georgia, Oregon, and Alaska.  Graduation and unemployment rate data were gathered for counties (or boroughs) who had populations of at least 225,000 people.  New Mexico was excluded from the analysis because it has many school districts per county and some cities and school districts straddle county lines.  Regression models were estimated for each of the remaining states separately.  In each model, graduation rates increased as unemployment rates decreased.  This relationship was significant across all of the models, except for the model for Alaska where there likely was a loss of power due to small sample size.  
+
+
+
+**Table 1: Effects of Unemployment Rates on Graduation Rates in Under Performing States**
+
+```{r,echo=FALSE,results='asis'}
+library(knitr)
+
+kable(table.one, format="markdown")
+```
+
+  
+A final bivariate regression model was estimated with data from all four of the underperforming states together.  Again, a strong relationship between graduation rates and unemployment rates was evident.   This model explains 52% of the variance in the graduation rates in the urban areas of the underperforming states between 2011 and 2015 (R-squared=.52).  
+
+
+```{r echo=FALSE}
+plotUnderperformingStates <- ggplot(Underperforming.States,aes(x=Graduation.Rate.Total, y=Unemployment.Rate))+
+   geom_point() +
+   stat_smooth(method='lm',se=FALSE)+
+   labs(title="Effect of Unemployment on Graduation Rates")+
+   labs(x = "Graduation Rate")+
+   labs(y="Unemployment Rate")
+print(plotUnderperformingStates)
+```
+
+#Conclusions and Recommendations:
+
+Graduation rates have improved at both WCSD and CCSD and at the State level between 2011 and 2015.  Some schools, such as Hug High School in WCSD, and Eldorado and Rancho High Schools in CCSD, have shown large improvements in graduation rates.  Special populations of students have shown gains over this five year period, but are still lagging well behind when compared to the general student population.  Students who are economically disadvantaged, students with disabilities, and students who are English language learners represent the biggest opportunities for growth in the future.  In Washoe and Clark counties in Nevada, high unemployment rates appear to have put stressors on families that resulted in decreased graduation rates. The current research suggests that unemployment rates can effect graduation rates, at least in more urban communities where the effectiveness of schools might be especially vulnerable to environmental influences because they are already underperforming.  
+
+By 2020, the Nevada State goal is to be at or above the national average for graduation rates.  In 2015, 340 million dollars was approved by the Nevada Legislature for new education programs. For example, 27 million dollars was allocated for the Read by 3 Initiative that provides extra funding for literacy support of students. Additional funding was also approved for ELL schools and the poorest schools in Nevada. The results of the current research make clear that these goals for future graduation rates are dependent not only on changes at the district and school levels, but also on community level factors.  Specifically, economic development in the urban areas of Nevada needs to be a major focus in order to keep unemployment rates lower, if graduation rates are to continue to rise.  
+
+
+## Future Research:
+
+Future research could try to identify why unemployment rates are so predictive of graduation rates in urban areas of Nevada, but not in more rural areas, and whether this is also true in other underperforming states.  Also, it would be interesting to assess the effects of unemployment rates on graduation rates in communities where the graduation rates are already high.  
+
